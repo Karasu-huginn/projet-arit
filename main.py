@@ -1,7 +1,7 @@
 from tkinter import *
 
 
-def message_keep_letters(message):
+def message_keep_letters(message):  # removes spaces and apostrophes and returns a string
     message = list(message)
     for i in range(len(message)-1,0,-1):
         if message[i] == " " or message[i] == "'":
@@ -9,19 +9,19 @@ def message_keep_letters(message):
     message = listToString(message)
     return message
 
-def listToString(list, additionnalValue=''):
+def listToString(list, additionnalValue=''):    # transform a list into a string and returns it
     string = ''
     for i in range(len(list)):
         string += list[i] + additionnalValue
     return string
 
-def display_board(board):
+def display_board(board):   # displays the board in the console
     for i in range(len(board)):
         for u in range(len(board)):
             print(board[i][u], end=' ')
         print('')
 
-def determine_board_length(message):
+def determine_board_length(message):    # determines the needed length of the board to contain the whole message
     for i in range(0,100):
         if i%2 == 0:
             if i*i >= len(message):
@@ -30,21 +30,21 @@ def determine_board_length(message):
             if (i*i)-1 >= len(message):
                 return i
 
-def test_move(board, x, y, maxCoord, character):
+def test_move(board, x, y, maxCoord, character):    # test function to rotate a character along the grid
     board[x][y] = character
     x, y = y, maxCoord-x
     return x,y
 
-def get_coord(x,y, maxCoord):
+def get_rotated_coord(x,y, maxCoord):   # test function to only get a rotated version of coordinates
     x, y = y, maxCoord-x
 
-def adapt_length(length):
+def adapt_length(length):   # adapt the length for the test_move() function
     if length%2 == 0:
         return length
     else:
         return length-1
 
-def substring_divide(message, length):
+def substring_divide(message, length):  # divides a string into multiple strings by a given length and returns a list storing them
     addedLength = 0
     listOfStrings = list()
     while addedLength < len(message):
@@ -57,15 +57,12 @@ message = "c'est un message a chiffrer"
 message = message_keep_letters(message)
 n = determine_board_length(message)
 length = adapt_length(n)
-board = [[0]*n for i in range(n)]
-x = 0
-y = 0
+board = [[0]*n for i in range(n)]   # creates a bidimensional list containing 0s
+x = 4
+y = 1
 
-for i in range():
-    print(i)
-
-#for i in range(4):
-#    x,y = test_move(board, x, y, n-1, message[i])
+for i in range(4):
+    x,y = test_move(board, x, y, n-1, message[i])
 print(substring_divide(message, length))
 display_board(board)
 
