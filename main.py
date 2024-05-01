@@ -32,20 +32,9 @@ def determine_board_length(message):    # determines the needed length of the bo
             if (i*i)-1 >= len(message):
                 return i
 
-def test_move(board, x, y, maxCoord, character):    # test function to rotate a character along the grid
-    board[x][y] = character
+def get_rotated_coord(x,y, maxCoord):   # get a rotated version of coordinates
     x, y = y, maxCoord-x
     return x,y
-
-def get_rotated_coord(x,y, maxCoord):   # test function to only get a rotated version of coordinates
-    x, y = y, maxCoord-x
-    return x,y
-
-def adapt_length(length):   # adapt the length for the test_move() function
-    if length%2 == 0:
-        return length
-    else:
-        return length-1
 
 def substring_divide(message, length):  # divides a string into multiple strings by a given length and returns a list storing them
     addedLength = 0
@@ -55,14 +44,20 @@ def substring_divide(message, length):  # divides a string into multiple strings
         addedLength += length
     return listOfStrings
 
+def message_adapt_length(message, n):
+    if n*n-len(message) != 0:
+        for i in range(n*n-len(message)):
+            message = ''.join([message,chr(randint(97,122))])
+    return message
 
-message = "c'est un message a chiffrerrr"
+
+message = "123456 123456 123456 123456 123456 123456 1"
 message = message_keep_letters(message)
 n = determine_board_length(message)
-length = adapt_length(n)
+message = message_adapt_length(message, n)
+print(message)
+length = n-1
 board = [[0]*n for i in range(n)]   # creates a bidimensional list containing 0s
-#x = 4
-#y = 1
 
 coords = list()
 coordsPair = [0,0]
@@ -73,23 +68,17 @@ for i in range(math.floor(n/2)):
             x, y = get_rotated_coord(x,y, length)
         coordsPair[0], coordsPair[1] = x, y
         coords.append(coordsPair[0:])
-print(coords)
 
 dividedMessage = substring_divide(message, math.floor(n/2)*math.ceil(n/2))
-print(dividedMessage)
 
 for i in range(4):
-    display_board(board)
-    print(dividedMessage[i])
+    #display_board(board)
+    print('')
     for u in range(math.floor(n/2)*math.ceil(n/2)):
         board[coords[u][0]][coords[u][1]] = dividedMessage[i][u]
     for u in range(math.floor(n/2)*math.ceil(n/2)):
         coords[u][0], coords[u][1] = get_rotated_coord(coords[u][0], coords[u][1], length)
 display_board(board)
-
-
-#for i in range(4):
-#    x,y = test_move(board, x, y, n-1, message[i])
 
 
 
