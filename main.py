@@ -32,8 +32,11 @@ def determine_board_length(message):    # determines the needed length of the bo
             if (i*i)-1 >= len(message):
                 return i
 
-def get_rotated_coord(x,y, maxCoord):   # get a rotated version of coordinates
-    x, y = y, maxCoord-x
+def get_rotated_coord(x,y, maxCoord, clock):   # get a rotated version of coordinates
+    if clock:
+        x, y = y, maxCoord-x
+    else: 
+        x, y = maxCoord-y, x
     return x,y
 
 def substring_divide(message, length):  # divides a string into multiple strings by a given length and returns a list storing them
@@ -55,43 +58,95 @@ def get_key_grid(board, coords):    # prints the grid-key to decypher the messag
         board[coords[i][0]][coords[i][1]] = 1
     print(board)
 
-def cypher(message):
+def key_to_coords(key): # gets the coordinates needed to decypher the message
+    coords = list()
+    coordsPair = [0, 0]
+    for i in range(len(key)):
+        for u in range(len(key[i])):
+            if key[i][u] == 1:
+                coordsPair[0], coordsPair[1] = i, u     #! might affect final result
+                coords.append(coordsPair[0:])
+    return coords
+
+def reset_key_board(board, coords):
+    for i in range(len(board)):
+        for u in range(len(board[i])):
+            board[i][u] = 0
+    for i in range(len(coords)):
+        board[coords[i][0]][coords[i][1]] = 1
+    return board
+
+
+def cypher(message, clock):
     message = message_keep_letters(message)
     n = determine_board_length(message)
     message = message_adapt_length(message, n)
     length = n-1
     board = [[0]*n for i in range(n)]   # creates a bidimensional list containing 0s
+    keyBoard = [[0]*n for i in range(n)]
     coords = list()
     coordsPair = [0,0]
     for i in range(math.floor(n/2)):
         for u in range(math.ceil(n/2)): # on sélectionne un coin entier de cases
             x, y = u, i
             for j in range(randint(0,4)):
-                x, y = get_rotated_coord(x,y, length)
+                x, y = get_rotated_coord(x,y, length, clock)
+            keyBoard[x][y] = 1
             coordsPair[0], coordsPair[1] = x, y
             coords.append(coordsPair[0:])
-    
+    display_board(keyBoard)
     get_key_grid(board, coords)
 
     dividedMessage = substring_divide(message, math.floor(n/2)*math.ceil(n/2))
 
+    
     for i in range(4):
+        char = 0
+        for u in range(n):
+            for j in range(n):
+                if keyBoard[u][j] == 1:
+                    board[u][j] = dividedMessage[i][char]
+                    char += 1
         display_board(board)
         print('')
         for u in range(math.floor(n/2)*math.ceil(n/2)):
-            board[coords[u][0]][coords[u][1]] = dividedMessage[i][u]
-        for u in range(math.floor(n/2)*math.ceil(n/2)):
-            coords[u][0], coords[u][1] = get_rotated_coord(coords[u][0], coords[u][1], length)
+            coords[u][0], coords[u][1] = get_rotated_coord(coords[u][0], coords[u][1], length, clock)
+        keyBoard = reset_key_board(keyBoard, coords)
+        display_board(keyBoard)
     display_board(board)
 
-def decypher():
-    print("to-do...")
+def decypher(message, clock, key):
+    coords = key_to_coords(key)
+    n = len(key)
+    print(coords)
+    message = substring_divide(message, n)
+    board = [[0]*(len(message)*6//4) for i in range(4)]
+    print(board)
+    for i in range(4):
+        for u in range(len(message)*6//4):
+            board[i][u] = message[coords[u][0]][coords[u][1]]
+    
+        for u in range(math.floor(n/2)*math.ceil(n/2)):
+            coords[u][0], coords[u][1] = get_rotated_coord(coords[u][0], coords[u][1], n-1, clock)
+        print(coords)
+    print(board)
+
+#key = [[0, 1, 1, 0, 0, 0], [1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0], [0, 1, 1, 0, 0, 0], [0, 1, 1, 0, 0, 0], [1, 0, 0, 0, 0, 0]]
+#message = "iceffecressriscagstesreestuloanngchm"
+key = [[0, 1, 0, 1, 0, 1], [0, 0, 0, 0, 1, 0], [0, 0, 1, 0, 0, 0], [0, 1, 0, 0, 1, 0], [0, 0, 0, 0, 0, 1], [0, 0, 0, 1, 0, 0]]
+message = "ryuoyutodurosimncptoeaumanokvtheehab"
+decypher(message, True, key)
+
+#message = "yourmouthdontmovebuticanhearyouspeak"
+#cypher(message, True)
 
 
-message = "ceci est un tres long message a chiffrer"
-cypher(message)
 
-
+#board = cypher(message)
+#test = ''
+#for i in range(6):
+#    test += listToString(board[i])
+#print(test)
 
 
 """
