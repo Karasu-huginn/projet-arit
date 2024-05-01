@@ -68,6 +68,12 @@ def key_to_coords(key): # gets the coordinates needed to decypher the message
                 coords.append(coordsPair[0:])
     return coords
 
+def temp_coords_to_key(coords, n):
+    key = [[0]*n for i in range(n)]
+    for i in range(len(coords)):
+        key[coords[i][0]][coords[i][1]] = 1
+    return key
+
 def reset_key_board(board, coords):
     for i in range(len(board)):
         for u in range(len(board[i])):
@@ -118,35 +124,32 @@ def cypher(message, clock):
 def decypher(message, clock, key):
     coords = key_to_coords(key)
     n = len(key)
-    print(coords)
     message = substring_divide(message, n)
-    board = [[0]*(len(message)*6//4) for i in range(4)]
-    print(board)
+    finalMessage = list()
     for i in range(4):
-        for u in range(len(message)*6//4):
-            board[i][u] = message[coords[u][0]][coords[u][1]]
-    
+        for u in range(n):
+            for j in range(n):
+                if key[u][j] == 1:
+                    finalMessage.append(message[u][j])
         for u in range(math.floor(n/2)*math.ceil(n/2)):
             coords[u][0], coords[u][1] = get_rotated_coord(coords[u][0], coords[u][1], n-1, clock)
-        print(coords)
-    print(board)
+        key = reset_key_board(key, coords)
+    finalMessage = listToString(finalMessage)
+    print(finalMessage)
 
-#key = [[0, 1, 1, 0, 0, 0], [1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0], [0, 1, 1, 0, 0, 0], [0, 1, 1, 0, 0, 0], [1, 0, 0, 0, 0, 0]]
-#message = "iceffecressriscagstesreestuloanngchm"
-key = [[0, 1, 0, 1, 0, 1], [0, 0, 0, 0, 1, 0], [0, 0, 1, 0, 0, 0], [0, 1, 0, 0, 1, 0], [0, 0, 0, 0, 0, 1], [0, 0, 0, 1, 0, 0]]
-message = "ryuoyutodurosimncptoeaumanokvtheehab"
-decypher(message, True, key)
+
+
+key = [[0, 1, 1, 0, 0, 0], [1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0], [0, 1, 1, 0, 0, 0], [0, 1, 1, 0, 0, 0], [1, 0, 0, 0, 0, 0]]
+message = "iceffecressriscagstesreestuloanngchm"    # clock False
+
+#key = [[0, 1, 0, 1, 0, 1], [0, 0, 0, 0, 1, 0], [0, 0, 1, 0, 0, 0], [0, 1, 0, 0, 1, 0], [0, 0, 0, 0, 0, 1], [0, 0, 0, 1, 0, 0]]
+#message = "ryuoyutodurosimncptoeaumanokvtheehab"   # clock True
+decypher(message, False, key)
 
 #message = "yourmouthdontmovebuticanhearyouspeak"
 #cypher(message, True)
 
 
-
-#board = cypher(message)
-#test = ''
-#for i in range(6):
-#    test += listToString(board[i])
-#print(test)
 
 
 """
