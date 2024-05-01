@@ -44,42 +44,52 @@ def substring_divide(message, length):  # divides a string into multiple strings
         addedLength += length
     return listOfStrings
 
-def message_adapt_length(message, n):
+def message_adapt_length(message, n):   # adds random characters at the end of the message to make it long enough to fit the grid
     if n*n-len(message) != 0:
         for i in range(n*n-len(message)):
             message = ''.join([message,chr(randint(97,122))])
     return message
 
+def get_key_grid(board, coords):    # prints the grid-key to decypher the message afterwards, can be modified later on to save it in a separate file
+    for i in range(len(coords)):
+        board[coords[i][0]][coords[i][1]] = 1
+    print(board)
 
-message = "123456 123456 123456 123456 123456 123456 1"
-message = message_keep_letters(message)
-n = determine_board_length(message)
-message = message_adapt_length(message, n)
-print(message)
-length = n-1
-board = [[0]*n for i in range(n)]   # creates a bidimensional list containing 0s
+def cypher(message):
+    message = message_keep_letters(message)
+    n = determine_board_length(message)
+    message = message_adapt_length(message, n)
+    length = n-1
+    board = [[0]*n for i in range(n)]   # creates a bidimensional list containing 0s
+    coords = list()
+    coordsPair = [0,0]
+    for i in range(math.floor(n/2)):
+        for u in range(math.ceil(n/2)): # on sélectionne un coin entier de cases
+            x, y = u, i
+            for j in range(randint(0,4)):
+                x, y = get_rotated_coord(x,y, length)
+            coordsPair[0], coordsPair[1] = x, y
+            coords.append(coordsPair[0:])
+    
+    get_key_grid(board, coords)
 
-coords = list()
-coordsPair = [0,0]
-for i in range(math.floor(n/2)):
-    for u in range(math.ceil(n/2)): # on sélectionne un coin entier de cases
-        x, y = u, i
-        for j in range(randint(0,4)):
-            x, y = get_rotated_coord(x,y, length)
-        coordsPair[0], coordsPair[1] = x, y
-        coords.append(coordsPair[0:])
+    dividedMessage = substring_divide(message, math.floor(n/2)*math.ceil(n/2))
 
-dividedMessage = substring_divide(message, math.floor(n/2)*math.ceil(n/2))
+    for i in range(4):
+        display_board(board)
+        print('')
+        for u in range(math.floor(n/2)*math.ceil(n/2)):
+            board[coords[u][0]][coords[u][1]] = dividedMessage[i][u]
+        for u in range(math.floor(n/2)*math.ceil(n/2)):
+            coords[u][0], coords[u][1] = get_rotated_coord(coords[u][0], coords[u][1], length)
+    display_board(board)
 
-for i in range(4):
-    #display_board(board)
-    print('')
-    for u in range(math.floor(n/2)*math.ceil(n/2)):
-        board[coords[u][0]][coords[u][1]] = dividedMessage[i][u]
-    for u in range(math.floor(n/2)*math.ceil(n/2)):
-        coords[u][0], coords[u][1] = get_rotated_coord(coords[u][0], coords[u][1], length)
-display_board(board)
+def decypher():
+    print("to-do...")
 
+
+message = "ceci est un tres long message a chiffrer"
+cypher(message)
 
 
 
