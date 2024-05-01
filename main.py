@@ -1,4 +1,6 @@
 from tkinter import *
+from random import randint
+import math
 
 
 def message_keep_letters(message):  # removes spaces and apostrophes and returns a string
@@ -37,6 +39,7 @@ def test_move(board, x, y, maxCoord, character):    # test function to rotate a 
 
 def get_rotated_coord(x,y, maxCoord):   # test function to only get a rotated version of coordinates
     x, y = y, maxCoord-x
+    return x,y
 
 def adapt_length(length):   # adapt the length for the test_move() function
     if length%2 == 0:
@@ -53,18 +56,40 @@ def substring_divide(message, length):  # divides a string into multiple strings
     return listOfStrings
 
 
-message = "c'est un message a chiffrer"
+message = "c'est un message a chiffrerrr"
 message = message_keep_letters(message)
 n = determine_board_length(message)
 length = adapt_length(n)
 board = [[0]*n for i in range(n)]   # creates a bidimensional list containing 0s
-x = 4
-y = 1
+#x = 4
+#y = 1
+
+coords = list()
+coordsPair = [0,0]
+for i in range(math.floor(n/2)):
+    for u in range(math.ceil(n/2)): # on sélectionne un coin entier de cases
+        x, y = u, i
+        for j in range(randint(0,4)):
+            x, y = get_rotated_coord(x,y, length)
+        coordsPair[0], coordsPair[1] = x, y
+        coords.append(coordsPair[0:])
+print(coords)
+
+dividedMessage = substring_divide(message, math.floor(n/2)*math.ceil(n/2))
+print(dividedMessage)
 
 for i in range(4):
-    x,y = test_move(board, x, y, n-1, message[i])
-print(substring_divide(message, length))
+    display_board(board)
+    print(dividedMessage[i])
+    for u in range(math.floor(n/2)*math.ceil(n/2)):
+        board[coords[u][0]][coords[u][1]] = dividedMessage[i][u]
+    for u in range(math.floor(n/2)*math.ceil(n/2)):
+        coords[u][0], coords[u][1] = get_rotated_coord(coords[u][0], coords[u][1], length)
 display_board(board)
+
+
+#for i in range(4):
+#    x,y = test_move(board, x, y, n-1, message[i])
 
 
 
