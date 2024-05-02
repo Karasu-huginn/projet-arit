@@ -82,6 +82,23 @@ def reset_key_board(board, coords):
         board[coords[i][0]][coords[i][1]] = 1
     return board
 
+def save_key(key):
+    file = open("save.txt", "w")
+    for i in range(len(key)):
+        for u in range(len(key[i])):
+            file.write(str(key[i][u]))
+        file.write('\n')
+
+def load_key():
+    file = open("test.txt", 'r')
+    key = list()
+    for line in file:
+        line = line.removesuffix('\n')
+        key.append(line)
+    for i in range(len(key)):
+        key[i] = list(key[i])
+    print(key)
+    return key
 
 def cypher(message, clock):
     message = message_keep_letters(message)
@@ -102,6 +119,7 @@ def cypher(message, clock):
             coords.append(coordsPair[0:])
     display_board(keyBoard)
     get_key_grid(board, coords)
+    save_key(keyBoard)
 
     dividedMessage = substring_divide(message, math.floor(n/2)*math.ceil(n/2))
 
@@ -138,16 +156,23 @@ def decypher(message, clock, key):
     print(finalMessage)
 
 
+#key = [[0,0,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0],[1,0,1,1,0,0,1,0,0,1,0,0,0,0,0,1,0],[1,0,0,0,0,0,1,0,0,1,1,0,0,1,0,0,0],[0,1,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0],[0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0],[0,0,0,0,1,1,0,1,1,0,0,0,1,0,0,1,0],[0,1,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,1,1,0,1,1,0,0,0,1,0,0,0],[1,0,0,0,0,0,0,0,0,0,1,0,1,0,0,1,0],[0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1],[1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0],[0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,1,1],[0,0,1,1,0,0,1,1,0,1,0,0,0,0,1,0,0],[0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,1,0,0,1,1,0,0,0,0,1,0,0],[0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,0],[1,0,0,1,0,0,1,0,0,1,0,1,1,0,0,1,0]]
+#message = "bfcobeeacduomtauypeutasesarenpirpdrtoreqogrgrawaiuirmllemsdiosiknmiltlmgbeietrwashotesunbancardintgobreeqcnauupinetsyacilfonseeitdeoabudpsshlkyrppelcuivieailoyewlshysybacwdcmeujcixmysaeculmnfwsiasuanlvatseedaakniortptwarbxlioordsuztycewulwsioelldgekdeelnbjtiojloeqyctwhtahvvetswoxoxrlheda"
+key = load_key()
 
-key = [[0, 1, 1, 0, 0, 0], [1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0], [0, 1, 1, 0, 0, 0], [0, 1, 1, 0, 0, 0], [1, 0, 0, 0, 0, 0]]
-message = "iceffecressriscagstesreestuloanngchm"    # clock False
+#key = [[0, 1, 1, 0, 0, 0], [1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0], [0, 1, 1, 0, 0, 0], [0, 1, 1, 0, 0, 0], [1, 0, 0, 0, 0, 0]]
+#message = "iceffecressriscagstesreestuloanngchm"    # clock False
 
 #key = [[0, 1, 0, 1, 0, 1], [0, 0, 0, 0, 1, 0], [0, 0, 1, 0, 0, 0], [0, 1, 0, 0, 1, 0], [0, 0, 0, 0, 0, 1], [0, 0, 0, 1, 0, 0]]
 #message = "ryuoyutodurosimncptoeaumanokvtheehab"   # clock True
-decypher(message, False, key)
 
-#message = "yourmouthdontmovebuticanhearyouspeak"
-#cypher(message, True)
+#key = [[0, 1, 0, 0, 1], [0, 1, 0, 0, 0], [1, 0, 0, 0, 0], [0, 0, 1, 0, 0], [0, 1, 0, 0, 0]]
+#message = "etamhliponsg0sasaiigrsemi"
+
+#decypher(message, True, key)
+
+message = "this is a long impair message"
+cypher(message, True)
 
 
 
